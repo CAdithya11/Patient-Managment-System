@@ -5,7 +5,26 @@ on:
 jobs:
   build-and-run:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports: 
+          - 5000:5432
+        env:
+          POSTGRES_PASSWORD: mypassword
+          POSTGRES_USER: myuser
+          POSTGRES_DB: patient_management
+        
     steps:
       - name: checkout-code
         uses: actions/checkout@v4
-  
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.14.1
+        with: 
+          java-version: 21
+
+      - name: Build project
+        working-directory: ./patient-service
+        run: mvn clean package --no-transfer-progress 
+        
