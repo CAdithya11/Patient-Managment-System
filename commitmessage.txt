@@ -1,0 +1,37 @@
+# -----------------------------
+# COMMIT MESSAGE TEMPLATE
+# -----------------------------
+
+# Commit Types (choose one):
+# feat     - A new feature
+# fix      - A bug fix
+# docs     - Documentation only changes
+# style    - Code style or formatting (no functional changes)
+# refactor - Code changes that neither fix a bug nor add a feature
+# perf     - Performance improvements
+# test     - Adding or fixing tests
+# chore    - Changes to build process or auxiliary tools/libraries
+# build    - Changes that affect the build system or dependencies
+# ci       - Continuous Integration related changes
+
+# ----------------------------------------------------
+
+<type>(<scope>): <short summary>
+
+# Detailed description (optional):
+# - What is the change and why?
+# - Key points or decisions made
+
+# Footer (optional):
+# - Closes #issue_number (if applicable)
+# - BREAKING CHANGE: description (if applicable)
+
+# -----------------------------
+# Example:
+
+# feat(patient): add patient registration endpoint
+
+# Added POST /patients API endpoint with validation.
+# Improved error handling and added basic tests.
+
+# Closes #123
