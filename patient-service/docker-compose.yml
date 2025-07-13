@@ -1,0 +1,21 @@
+# Use postgres/example user/password credentials
+
+services:
+
+  db:
+    image: postgres:latest
+    restart: always
+    shm_size: 128mb
+    container_name: springboot-postgres
+    environment:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: myuser
+      POSTGRES_DB: patient_management
+    ports:
+      - 5000:5432
+    networks:
+      - internal-net
+
+networks:
+  internal-net:
+    driver: bridge
