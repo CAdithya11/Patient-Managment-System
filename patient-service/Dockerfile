@@ -14,7 +14,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 
 # Compile and package the Spring Boot application (produces a JAR file)
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 # --- Stage 2: Create a lightweight runtime container ---
 FROM openjdk:21-jdk AS runner
