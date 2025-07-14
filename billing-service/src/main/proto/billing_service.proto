@@ -1,0 +1,25 @@
+// This is a proto file for gRPC service definition
+
+syntax = "proto3"; // Use proto3 syntax for defining the service and messages
+
+option java_multiple_files = true; 
+// Split service requests amd response files into 
+// separate Java files. With normal it is messy and this way it is easy to manage.
+
+option java_package = "billing";
+
+service BillingService {
+    rpc CreateBillingAccount(BillingRequest) returns (BillingResponse);
+}
+
+message BillingRequest { // kind a DTO or a Java Object
+    string patientId = 1; // used in GRPC protobuf to serialization and deserialization
+    string name = 2;
+    string email = 3;
+    // numbers needs to be unique
+}
+
+message BillingResponse {
+    string accountId = 1;
+    string status = 2;
+}
