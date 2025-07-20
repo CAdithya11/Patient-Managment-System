@@ -1,9 +1,11 @@
 package com.pm.patientService.service.serviceImpl;
 
+import com.google.api.Billing;
 import com.pm.patientService.dto.PatientRequestDTO;
 import com.pm.patientService.dto.PatientResponseDTO;
 import com.pm.patientService.exceptions.EmailAlreadyExistsException;
 import com.pm.patientService.exceptions.PatientWithTheIdDoesNotExistsException;
+import com.pm.patientService.grpc.BillingServiceGrpcClient;
 import com.pm.patientService.mapper.PatientMapper;
 import com.pm.patientService.model.Patient;
 import com.pm.patientService.repository.PatientRepository;
@@ -18,9 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
+    private final BillingServiceGrpcClient billingServiceGrpcClient;
 
-    PatientServiceImpl(PatientRepository patientRepository) {
+    PatientServiceImpl(PatientRepository patientRepository,BillingServiceGrpcClient billingServiceGrpcClient) {
         this.patientRepository = patientRepository;
+        this.billingServiceGrpcClient = billingServiceGrpcClient;
     }
 
     @Override
@@ -35,6 +39,8 @@ public class PatientServiceImpl implements PatientService {
             throw new EmailAlreadyExistsException("A patient with the email already exists " + patient.getEmail());
         }
         Patient newPatient = patientRepository.save(PatientMapper.toModel(patient));
+        // Call the gRPC service to create a billing account for the new patient
+        billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(),newPatient.getName(), newPatient.getEmail());
         return PatientMapper.toDTO(newPatient);
     }
 
