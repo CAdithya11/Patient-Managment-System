@@ -1,30 +1,26 @@
 package com.pm.billing_service.grpc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import billing.BillingRequest;
 import billing.BillingResponse;
 import billing.BillingServiceGrpc.BillingServiceImplBase;
-import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 
-@GrpcService    
+@GrpcService
 public class BillingGRPCService extends BillingServiceImplBase {
-    private static final Logger log = LoggerFactory.getLogger(
-            BillingGRPCService.class);
-
     @Override
-    public void createBillingAccount(BillingRequest billingRequest,
-            StreamObserver<BillingResponse> responseObserver) {
-        log.info("CreateBillingAccount request received: {}", billingRequest.toString());
-        BillingResponse response = BillingResponse.newBuilder()
-                .setAccountId("1123")
-                .setStatus("ACTIVE")
-                .build();
+    public void createBillingAccount(billing.BillingRequest billingRequest,
+            io.grpc.stub.StreamObserver<BillingResponse> responseObserver) {
 
-        responseObserver.onNext(response);
-        responseObserver.onCompleted(); // Can send many responses as want until oncomplete is called
-        log.info("CreateBillingAccount response sent: {}", response.toString());
+        System.out.println(">>> patientId: " + billingRequest.getPatientId());
+        System.out.println(">>> name     : " + billingRequest.getName());
+        System.out.println(">>> email    : " + billingRequest.getEmail());
+
+        BillingResponse respone = BillingResponse.newBuilder()
+                .setStatus("ACTIVE")
+                .setAccountId("123")
+                .build();
+        responseObserver.onNext(respone); // Send a response from the Grpc Server back to the patient
+        // If many response, send before complete with the help ON NEXT
+        responseObserver.onCompleted(); // Send is complete and we are ending the cycle
+
     }
 }
