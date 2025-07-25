@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_USER: myuser
       POSTGRES_DB: patient_management # Database Name
-    ports:
+    ports: 
       - 5000:5432
     networks:
       - internal-net
