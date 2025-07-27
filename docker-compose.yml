@@ -10,11 +10,11 @@ services:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_USER: myuser
       POSTGRES_DB: patient_management # Database Name
-    ports: 
+    ports:
       - 5000:5432
     networks:
       - internal-net
-# spring.datasource.url=jdbc:postgresql://springboot-postgres:5432/patient_management
+  # spring.datasource.url=jdbc:postgresql://springboot-postgres:5432/patient_management
 
   billing-service:
     build:
@@ -22,8 +22,8 @@ services:
       dockerfile: Dockerfile
     container_name: billing-service
     ports:
-      - "4001:4001"  # HTTP port
-      - "9001:9001"  # gRPC port
+      - '4001:4001' # HTTP port
+      - '9001:9001' # gRPC port
     networks:
       - internal-net
 
@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     container_name: patient-service
     ports:
-      - "4000:4000"
+      - '4000:4000'
     environment:
       # Use billing-service as hostname, not localhost
       - BILLING_SERVICE_ADDRESS_LOCALHOST=billing-service
@@ -42,7 +42,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://springboot-postgres:5432/patient_management
       - SPRING_DATASOURCE_USERNAME=myuser
       - SPRING_DATASOURCE_PASSWORD=mypassword
-      # Kafka 
+      # Kafka
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       - db
@@ -50,6 +50,26 @@ services:
     networks:
       - internal-net
 
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    container_name: analytics-service
+    ports:
+      - 4002:4002
+    depends_on:
+      - db
+      - billing-service
+      - patient-service
+    networks:
+      - internal-net
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
+# networks:
+#   internal-net:
+#     driver: bridge
+
 networks:
   internal-net:
-    driver: bridge
+    external: true
