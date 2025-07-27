@@ -20,8 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import static com.pm.patientService.exceptions.GlobalExceptionHandler.log;
-
 @Service
 public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
