@@ -36,12 +36,14 @@ services:
       - "4000:4000"
     environment:
       # Use billing-service as hostname, not localhost
-      - billing.service.address.localhost=billing-service
-      - billing.service.grpc.port=9001
+      - BILLING_SERVICE_ADDRESS_LOCALHOST=billing-service
+      - BILLING_SERVICE_GRPC_PORT=9001
       # PostgreSQL connection (note: use service name springboot-postgres as host)
-      - spring.datasource.url=jdbc:postgresql://springboot-postgres:5432/patient_management
-      - spring.datasource.username=myuser
-      - spring.datasource.password=mypassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://springboot-postgres:5432/patient_management
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=mypassword
+      # Kafka 
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       - db
       - billing-service
