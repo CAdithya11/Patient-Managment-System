@@ -6,6 +6,7 @@ import com.pm.patientService.dto.PatientResponseDTO;
 import com.pm.patientService.exceptions.EmailAlreadyExistsException;
 import com.pm.patientService.exceptions.PatientWithTheIdDoesNotExistsException;
 import com.pm.patientService.grpc.BillingServiceGrpcClient;
+import com.pm.patientService.kafka.KafkaProducer;
 import com.pm.patientService.mapper.PatientMapper;
 import com.pm.patientService.model.Patient;
 import com.pm.patientService.repository.PatientRepository;
@@ -15,16 +16,23 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import static com.pm.patientService.exceptions.GlobalExceptionHandler.log;
 
 @Service
 public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
+    private final KafkaProducer kafkaProducer;
+    
 
-    PatientServiceImpl(PatientRepository patientRepository,BillingServiceGrpcClient billingServiceGrpcClient) {
+    PatientServiceImpl(PatientRepository patientRepository,BillingServiceGrpcClient billingServiceGrpcClient, KafkaProducer kafkaProducer) {
         this.patientRepository = patientRepository;
         this.billingServiceGrpcClient = billingServiceGrpcClient;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -39,9 +47,15 @@ public class PatientServiceImpl implements PatientService {
             throw new EmailAlreadyExistsException("A patient with the email already exists " + patient.getEmail());
         }
         Patient newPatient = patientRepository.save(PatientMapper.toModel(patient));
+
         // Call the gRPC service to create a billing account for the new patient
         billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(),newPatient.getName(), newPatient.getEmail());
+
+        // Kafka Producer send message
+        kafkaProducer.sendEvent(newPatient);
+
         return PatientMapper.toDTO(newPatient);
+        
     }
 
     @Override
