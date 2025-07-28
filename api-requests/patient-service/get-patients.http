@@ -1,1 +1,5 @@
-GET http://localhost:4000/patients
+# GET http://localhost:4000/patients
+# With API getway this is not working
+
+GET http://localhost:4004/api/patients
+
