@@ -21,19 +21,22 @@ services:
       context: ./billing-service
       dockerfile: Dockerfile
     container_name: billing-service
+    image: chamudithaadithya/patient_management_system_billing:latest
     ports:
       - '4001:4001' # HTTP port
       - '9001:9001' # gRPC port
     networks:
       - internal-net
+    
 
   patient-service:
     build:
       context: ./patient-service
       dockerfile: Dockerfile
     container_name: patient-service
-    ports:
-      - '4000:4000'
+    image: chamudithaadithya/patient_management_system_patient:latest
+    # ports:
+    # - 4000:4000 NO longer accepts since api-getwat handle it
     environment:
       # Use billing-service as hostname, not localhost
       - BILLING_SERVICE_ADDRESS_LOCALHOST=billing-service
@@ -55,6 +58,7 @@ services:
       context: ./analytics-service
       dockerfile: Dockerfile
     container_name: analytics-service
+    image: chamudithaadithya/patient_management_system_analytics:latest
     ports:
       - 4002:4002
     depends_on:
@@ -65,6 +69,17 @@ services:
       - internal-net
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
+  api-getway:
+    build:
+      context: ./api-getway
+      dockerfile: Dockerfile
+    container_name: api-getway
+    image: chamudithaadithya/patient_management_system_api_getway:latest
+    ports:
+      - 4004:4004
+    networks:
+      - internal-net
 
 # networks:
 #   internal-net:
