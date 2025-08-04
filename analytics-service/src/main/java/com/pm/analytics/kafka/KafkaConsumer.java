@@ -1,4 +1,4 @@
-package com.pm.analytics_service.kafka;
+package com.pm.analytics.kafka;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.slf4j.Logger;
