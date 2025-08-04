@@ -16,13 +16,14 @@ services:
       - internal-net
   # spring.datasource.url=jdbc:postgresql://springboot-postgres:5432/patient_management
 
-  db_auth_servuce: 
+  db_auth: 
     image: postgres:latest
     shm_size: 128mb
     restart: always
+    container_name: auth-service
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: auth
+      POSTGRES_DB: patient_management
       POSTGRES_USER: user
     ports:
       - 5002:5432
@@ -93,6 +94,18 @@ services:
       - 4004:4004
     networks:
       - internal-net
+  
+  auth-service:
+    build: 
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    image: chamudithaadithya/patient_management_system:auth_service
+    ports:
+      - 4005:4005
+    networks:
+      - internal-net
+
 
 # networks:
 #   internal-net:

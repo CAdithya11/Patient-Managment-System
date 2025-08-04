@@ -1,0 +1,15 @@
+services:
+  auth-service:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-service
+    image: chamudithaadithya/patient_management_system:auth_service
+    ports:
+      - 5004:5342
+    networks:
+      - internal-net
+
+networks:
+  internal-net:
+    driver: bridge
